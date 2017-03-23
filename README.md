@@ -1,6 +1,5 @@
-# Docker imm.com
-
-Dockerized version of imm.com
+# Docker Craft
+Dockerized version of craft
 
 Maintainer: Caleb Collins <kbcaleb@gmail.com>
 
