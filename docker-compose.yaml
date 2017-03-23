@@ -1,0 +1,68 @@
+version: "2"
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - 80:80
+      - 443:443
+    volumes_from:
+      - app
+    volumes:
+      - ./app/conf/nginx-partials:/etc/nginx/nginx-partials
+      - ./app/conf/SOMEDOMAIN.com.crt:/etc/nginx/ssl/live/SOMEDOMAIN.com/SOMEDOMAIN.com.crt
+      - ./app/conf/SOMEDOMAIN.com.key:/etc/nginx/ssl/live/SOMEDOMAIN.com/SOMEDOMAIN.com.key
+      - ./app/conf/default.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - php
+
+  php:
+    image: kbcaleb/craft-php
+    expose:
+      - 9000
+    volumes_from:
+      - app
+    links:
+      - mysql
+
+  app:
+    image: php:7-fpm
+    volumes:
+      - ./app/conf/www.conf:/usr/local/etc/php-fpm.d/www.conf
+      - ./app:/var/www/imm_com
+    command: "true"
+
+  mysql:
+    image: mysql:5.6
+    volumes_from:
+      - data
+    volumes:
+      - ./app/backups:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: Ch4ng3M3N0w
+      MYSQL_DATABASE: site_craft
+      MYSQL_USER: user_craft
+      MYSQL_PASSWORD: Ch4ng3M3N0w
+
+  data:
+    image: mysql:5.6
+    volumes:
+      - /var/lib/mysql
+    command: "true"
+
+  developer:
+    build: ./compose/developer
+    container_name: compose
+    volumes_from:
+      - node
+    working_dir: /usr/src/app
+    ports:
+      - 3000:3000
+      - 3001:3001
+    links:
+      - nginx
+
+  node:
+    image: node:latest
+    volumes:
+      - ./app:/usr/src/app
+    command: "true"
