@@ -16,6 +16,15 @@ Pretty basic right now
 git clone https://github.com/cmr1/docker-craft.git
 ```
 
+### SSL Certs
+You will need to put your SSL certificates in the app/conf directory and update the docker-compose.yaml file to point to them.
+```conf
+    volumes:
+      - ./app/conf/nginx-partials:/etc/nginx/nginx-partials
+      - ./app/conf/SOMEDOMAIN.com.crt:/etc/nginx/ssl/live/SOMEDOMAIN.com/SOMEDOMAIN.com.crt
+      - ./app/conf/SOMEDOMAIN.com.key:/etc/nginx/ssl/live/SOMEDOMAIN.com/SOMEDOMAIN.com.key
+      - ./app/conf/default.conf:/etc/nginx/conf.d/default.conf
+```
 ### Deploy
 ```shell
 cd docker-craft
@@ -40,7 +49,7 @@ compose      |
 compose      | Done, without errors.
 compose exited with code 0
 ```
-You can alwasy background the whole thing with
+You can always background the whole thing with
 ```shell
 docker-compose up -d
 ```
